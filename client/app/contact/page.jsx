@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import Link from 'next/link';
+import { Header } from '@/components/header';
 import { MessageCircle, Phone, Mail } from 'lucide-react';
 
 export default function ContactPage() {
@@ -44,7 +44,7 @@ export default function ContactPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     if (validateForm()) {
       // Save to localStorage
       const existingMessages = JSON.parse(localStorage.getItem('kidus_contact_messages') || '[]');
@@ -54,10 +54,10 @@ export default function ContactPage() {
         date: new Date().toISOString(),
         status: 'new'
       };
-      
+
       existingMessages.push(newMessage);
       localStorage.setItem('kidus_contact_messages', JSON.stringify(existingMessages));
-      
+
       setSubmitted(true);
       setFormData({
         name: '',
@@ -77,19 +77,7 @@ export default function ContactPage() {
   return (
     <main className="min-h-screen bg-background">
       {/* Navigation */}
-      <nav className="sticky top-0 z-50 bg-background border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-primary rounded-full"></div>
-              <span className="text-xl font-serif font-bold text-foreground">Kidus Online</span>
-            </Link>
-            <Link href="/">
-              <Button variant="outline">Back to Home</Button>
-            </Link>
-          </div>
-        </div>
-      </nav>
+      <Header backHref="/" backText="Back to Home" />
 
       {/* Contact Section */}
       <section className="py-20">

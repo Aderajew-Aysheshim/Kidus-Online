@@ -6,15 +6,16 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import Link from 'next/link';
+import { Header } from '@/components/header';
 import { useCart } from '@/context/CartContext';
 
 const PRODUCTS = {
-  kirar: { 
-    name: 'Kirar', 
+  kirar: {
+    name: 'Kirar',
     image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/kirar%20for%20sell%20side%20view-Pos4gWLLWBdoyFVz4Y8FUWaqUMftCz.jpg'
   },
-  begena: { 
-    name: 'Begena', 
+  begena: {
+    name: 'Begena',
     image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/photo_2026-03-01_16-30-33-VgTMnwgJOKyslW09J7WxOdpG9TsQH4.jpg'
   }
 };
@@ -115,16 +116,7 @@ export default function CheckoutPage() {
   if (cart.length === 0) {
     return (
       <main className="min-h-screen bg-background">
-        <nav className="sticky top-0 z-50 bg-background border-b border-border">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between h-16">
-              <Link href="/" className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-primary rounded-full"></div>
-                <span className="text-xl font-serif font-bold text-foreground">Kidus Online</span>
-              </Link>
-            </div>
-          </div>
-        </nav>
+        <Header />
 
         <section className="py-20">
           <div className="max-w-3xl mx-auto px-4">
@@ -150,6 +142,25 @@ export default function CheckoutPage() {
               <div className="w-8 h-8 bg-primary rounded-full"></div>
               <span className="text-xl font-serif font-bold text-foreground">Kidus Online</span>
             </Link>
+            {/* social links */}
+            <div className="flex items-center gap-4">
+              <a
+                href="https://youtube.com/channel/UCrZrZWK_7UHLAY-G16OX3HA?si=zxQEOBOBTtuiRROW"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:underline text-sm"
+              >
+                YouTube
+              </a>
+              <a
+                href="https://www.tiktok.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:underline text-sm"
+              >
+                TikTok
+              </a>
+            </div>
           </div>
         </div>
       </nav>
@@ -384,30 +395,30 @@ export default function CheckoutPage() {
             <div>
               <Card className="p-6 sticky top-20">
                 <h3 className="text-xl font-serif font-bold text-foreground mb-6">Order Summary</h3>
-                
+
                 <div className="space-y-4 mb-6">
                   {cart.map((item) => {
                     const productData = PRODUCTS[item.id];
                     return (
-                    <div key={item.cartItemId} className="border border-border rounded-lg p-3">
-                      {productData?.image && (
-                        <div className="relative w-full h-24 mb-3">
-                          <Image
-                            src={productData.image}
-                            alt={item.name}
-                            fill
-                            className="object-cover rounded-md"
-                          />
+                      <div key={item.cartItemId} className="border border-border rounded-lg p-3">
+                        {productData?.image && (
+                          <div className="relative w-full h-24 mb-3">
+                            <Image
+                              src={productData.image}
+                              alt={item.name}
+                              fill
+                              className="object-cover rounded-md"
+                            />
+                          </div>
+                        )}
+                        <div className="flex justify-between items-center">
+                          <div>
+                            <p className="font-semibold text-foreground text-sm">{item.name}</p>
+                            <p className="text-muted-foreground text-xs">Qty: {item.quantity}</p>
+                          </div>
+                          <span className="text-foreground font-semibold">${(item.price * item.quantity).toFixed(2)}</span>
                         </div>
-                      )}
-                      <div className="flex justify-between items-center">
-                        <div>
-                          <p className="font-semibold text-foreground text-sm">{item.name}</p>
-                          <p className="text-muted-foreground text-xs">Qty: {item.quantity}</p>
-                        </div>
-                        <span className="text-foreground font-semibold">${(item.price * item.quantity).toFixed(2)}</span>
                       </div>
-                    </div>
                     );
                   })}
                 </div>
