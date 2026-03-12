@@ -4,7 +4,7 @@ Kidus Online 🎶
 A platform dedicated to preserving Ethiopian traditional music through authentic instruments and online learning.
 
 🎻 Buy traditional instruments
-• Kirar – $65
+• Kirar – $6
 • Begena – $200
 
 📚 Join professional courses

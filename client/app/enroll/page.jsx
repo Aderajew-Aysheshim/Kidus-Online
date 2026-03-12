@@ -9,8 +9,8 @@ import { useCart } from '@/context/CartContext';
 import { Calendar, Users, Clock } from 'lucide-react';
 
 const COURSES = {
-  begena: { name: 'Begena Course', price: 89, duration: '8 weeks', students: 'Up to 15', description: 'Learn the ancient Ethiopian harp with 10-13 strings. Master traditional techniques and spiritual music.' },
-  kirar: { name: 'Kirar Course', price: 69, duration: '6 weeks', students: 'Up to 20', description: 'Learn the traditional 5-10 stringed Ethiopian lyre. Perfect for beginners and intermediate players.' }
+  begena: { name: 'Begena Course', price: 120, duration: '8 weeks', students: 'Up to 15', description: 'Learn the ancient Ethiopian harp with 10-13 strings. Master traditional techniques and spiritual music.' },
+  kirar: { name: 'Kirar Course', price: 100, duration: '6 weeks', students: 'Up to 20', description: 'Learn the traditional 5-10 stringed Ethiopian lyre. Perfect for beginners and intermediate players.' }
 };
 
 const SCHEDULES = {

@@ -11,7 +11,7 @@ const _geistMono = Geist_Mono({ subsets: ["latin"], variable: '--font-mono' });
 const _playfair = Playfair_Display({ subsets: ["latin"], variable: '--font-serif' });
 
 export const metadata: Metadata = {
-  title: 'Kidus Online – Learn & Sell Kirar & Begena',
+  title: 'Kidus Online Learn & Sell Kirar & Begena',
   description: 'Learn and own authentic Ethiopian musical instruments. Online classes and worldwide delivery for Kirar and Begena instruments.',
   keywords: 'Kirar, Begena, Ethiopian bible, online lessons, traditional instruments, Ethiopian culture',
   generator: 'Next.js',

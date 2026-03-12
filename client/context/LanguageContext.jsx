@@ -15,7 +15,7 @@ export const translations = {
     shop: 'Shop',
     learn: 'Learn',
     welcome: 'Welcome to Kidus Online',
-    heroTitle: 'Learn and Own Authentic Ethiopian Instruments',
+    heroTitle: 'Learn and Own Order Ethiopian Instruments',
     heroDesc: 'Discover the Kirar and Begena—instruments with centuries of cultural heritage. Learn from experienced musicians and own handcrafted pieces delivered worldwide.',
     shopInstruments: 'Shop Instruments',
     exploreClasses: 'Explore Classes',

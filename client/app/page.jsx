@@ -147,11 +147,11 @@ export default function Home() {
                 <p className="text-sm text-muted-foreground mb-1">Traditional Ethiopian Lyre</p>
                 <p className="text-muted-foreground mb-6 flex-1 text-sm leading-relaxed">5-10 stringed instrument perfect for beginners and musicians seeking authentic Ethiopian sound and spiritual connection.</p>
                 <div className="flex items-baseline gap-2 mb-8 border-t border-border pt-6">
-                  <span className="text-3xl font-bold text-primary">$65</span>
+                  <span className="text-3xl font-bold text-primary">$80</span>
                   <span className="text-xs text-muted-foreground">USD</span>
                 </div>
                 <Button 
-                  onClick={() => handleAddToCart('kirar', 'Kirar', 'Instrument', 65)}
+                  onClick={() => handleAddToCart('kirar', 'Kirar', 'Instrument', 80)}
                   className="w-full bg-primary hover:bg-primary/90 text-background py-5 text-sm font-semibold"
                 >
                   Add to Cart
@@ -174,11 +174,11 @@ export default function Home() {
                 <p className="text-sm text-muted-foreground mb-1">Grand Ethiopian Harp</p>
                 <p className="text-muted-foreground mb-6 flex-1 text-sm leading-relaxed">10-13 stringed instrument with deep spiritual significance. A masterpiece of traditional Ethiopian craftsmanship and artistry.</p>
                 <div className="flex items-baseline gap-2 mb-8 border-t border-border pt-6">
-                  <span className="text-3xl font-bold text-primary">$200</span>
+                  <span className="text-3xl font-bold text-primary">$130</span>
                   <span className="text-xs text-muted-foreground">USD</span>
                 </div>
                 <Button 
-                  onClick={() => handleAddToCart('begena', 'Begena', 'Instrument', 200)}
+                  onClick={() => handleAddToCart('begena', 'Begena', 'Instrument', 130)}
                   className="w-full bg-primary hover:bg-primary/90 text-background py-5 text-sm font-semibold"
                 >
                   Add to Cart
