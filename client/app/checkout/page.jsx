@@ -153,7 +153,7 @@ export default function CheckoutPage() {
                 YouTube
               </a>
               <a
-                href="https://www.tiktok.com/"
+                href="https://www.tiktok.com/@mezmur0512"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-primary hover:underline text-sm"
