@@ -18,7 +18,9 @@ const SCHEDULES = {
   kirar: ['Tuesday & Thursday (8 PM)', 'Saturday (2 PM)', 'Wednesday & Friday (7 PM)']
 };
 
-export default function EnrollPage() {
+import { Suspense } from 'react';
+
+function EnrollContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { addEnrollment } = useCart();
@@ -393,5 +395,13 @@ export default function EnrollPage() {
         </div>
       </section>
     </main>
+  );
+}
+
+export default function EnrollPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <EnrollContent />
+    </Suspense>
   );
 }

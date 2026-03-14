@@ -10,23 +10,25 @@ import { Trash2, Plus, Minus, ShoppingCart } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 
 const PRODUCTS = {
-  kirar: { 
-    name: 'Kirar', 
-    type: 'Instrument', 
+  kirar: {
+    name: 'Kirar',
+    type: 'Instrument',
     id: 'kirar',
     image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/kirar%20for%20sell%20side%20view-Pos4gWLLWBdoyFVz4Y8FUWaqUMftCz.jpg',
     description: 'Traditional 5-10 stringed Ethiopian lyre. Handcrafted with authentic techniques.'
   },
-  begena: { 
-    name: 'Begena', 
-    type: 'Instrument', 
+  begena: {
+    name: 'Begena',
+    type: 'Instrument',
     id: 'begena',
     image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/photo_2026-03-01_16-30-33-VgTMnwgJOKyslW09J7WxOdpG9TsQH4.jpg',
     description: 'Large 10-13 stringed harp with deep spiritual significance.'
   }
 };
 
-export default function CartPage() {
+import { Suspense } from 'react';
+
+function CartContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { cart, addToCart, removeFromCart, updateCartQuantity, clearCart, addOrder } = useCart();
@@ -36,7 +38,7 @@ export default function CartPage() {
     setMounted(true);
     const product = searchParams.get('product');
     const price = searchParams.get('price');
-    
+
     if (product && price && PRODUCTS[product]) {
       const newItem = {
         id: PRODUCTS[product].id,
@@ -114,59 +116,59 @@ export default function CartPage() {
                 {cart.map((item) => {
                   const productData = PRODUCTS[item.id];
                   return (
-                  <Card key={item.cartItemId} className="p-6">
-                    <div className="flex gap-6 items-start justify-between">
-                      {productData?.image && (
-                        <div className="relative w-32 h-32 flex-shrink-0">
-                          <Image
-                            src={productData.image}
-                            alt={item.name}
-                            fill
-                            className="object-cover rounded-lg"
-                          />
-                        </div>
-                      )}
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-foreground text-lg">{item.name}</h3>
-                        <p className="text-muted-foreground text-sm mt-1">{item.type}</p>
-                        {productData?.description && (
-                          <p className="text-muted-foreground text-sm mt-2">{productData.description}</p>
+                    <Card key={item.cartItemId} className="p-6">
+                      <div className="flex gap-6 items-start justify-between">
+                        {productData?.image && (
+                          <div className="relative w-32 h-32 flex-shrink-0">
+                            <Image
+                              src={productData.image}
+                              alt={item.name}
+                              fill
+                              className="object-cover rounded-lg"
+                            />
+                          </div>
                         )}
-                        <p className="text-primary font-bold text-lg mt-3">${item.price.toFixed(2)}</p>
-                      </div>
-
-                      <div className="flex items-center gap-4">
-                        <div className="flex items-center border border-border rounded-lg">
-                          <button
-                            onClick={() => updateCartQuantity(item.cartItemId, item.quantity - 1)}
-                            className="p-2 hover:bg-secondary transition"
-                          >
-                            <Minus className="w-4 h-4" />
-                          </button>
-                          <span className="px-4 font-semibold">{item.quantity}</span>
-                          <button
-                            onClick={() => updateCartQuantity(item.cartItemId, item.quantity + 1)}
-                            className="p-2 hover:bg-secondary transition"
-                          >
-                            <Plus className="w-4 h-4" />
-                          </button>
+                        <div className="flex-1">
+                          <h3 className="font-semibold text-foreground text-lg">{item.name}</h3>
+                          <p className="text-muted-foreground text-sm mt-1">{item.type}</p>
+                          {productData?.description && (
+                            <p className="text-muted-foreground text-sm mt-2">{productData.description}</p>
+                          )}
+                          <p className="text-primary font-bold text-lg mt-3">${item.price.toFixed(2)}</p>
                         </div>
 
-                        <button
-                          onClick={() => removeFromCart(item.cartItemId)}
-                          className="p-2 hover:bg-destructive/10 text-destructive rounded-lg transition"
-                        >
-                          <Trash2 className="w-5 h-5" />
-                        </button>
+                        <div className="flex items-center gap-4">
+                          <div className="flex items-center border border-border rounded-lg">
+                            <button
+                              onClick={() => updateCartQuantity(item.cartItemId, item.quantity - 1)}
+                              className="p-2 hover:bg-secondary transition"
+                            >
+                              <Minus className="w-4 h-4" />
+                            </button>
+                            <span className="px-4 font-semibold">{item.quantity}</span>
+                            <button
+                              onClick={() => updateCartQuantity(item.cartItemId, item.quantity + 1)}
+                              className="p-2 hover:bg-secondary transition"
+                            >
+                              <Plus className="w-4 h-4" />
+                            </button>
+                          </div>
+
+                          <button
+                            onClick={() => removeFromCart(item.cartItemId)}
+                            className="p-2 hover:bg-destructive/10 text-destructive rounded-lg transition"
+                          >
+                            <Trash2 className="w-5 h-5" />
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                    <div className="border-t border-border mt-4 pt-4">
-                      <p className="text-right font-semibold text-foreground">
-                        Subtotal: ${(item.price * item.quantity).toFixed(2)}
-                      </p>
-                    </div>
-                  </Card>
-                );
+                      <div className="border-t border-border mt-4 pt-4">
+                        <p className="text-right font-semibold text-foreground">
+                          Subtotal: ${(item.price * item.quantity).toFixed(2)}
+                        </p>
+                      </div>
+                    </Card>
+                  );
                 })}
               </div>
 
@@ -174,7 +176,7 @@ export default function CartPage() {
               <div>
                 <Card className="p-6 sticky top-20">
                   <h3 className="text-xl font-serif font-bold text-foreground mb-6">Order Summary</h3>
-                  
+
                   <div className="space-y-4 border-b border-border pb-6 mb-6">
                     <div className="flex justify-between text-muted-foreground">
                       <span>Subtotal</span>
@@ -196,13 +198,13 @@ export default function CartPage() {
                   </div>
 
                   <div className="space-y-3">
-                    <Button 
+                    <Button
                       onClick={handleCheckout}
                       className="w-full bg-primary hover:bg-primary/90"
                     >
                       Proceed to Checkout
                     </Button>
-                    <Button 
+                    <Button
                       variant="outline"
                       className="w-full border-primary text-primary hover:bg-primary/10"
                       onClick={() => router.push('/')}
@@ -236,5 +238,13 @@ export default function CartPage() {
         </div>
       </section>
     </main>
+  );
+}
+
+export default function CartPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <CartContent />
+    </Suspense>
   );
 }
