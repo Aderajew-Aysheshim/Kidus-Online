@@ -83,7 +83,7 @@ export default function ConfirmationPage() {
             {/* Order Info */}
             <Card className="p-8">
               <h2 className="text-xl font-serif font-bold text-foreground mb-6">Order Information</h2>
-              
+
               <div className="space-y-4">
                 <div>
                   <p className="text-sm text-muted-foreground mb-1">Order ID</p>
@@ -110,10 +110,10 @@ export default function ConfirmationPage() {
               </div>
             </Card>
 
-            {/* Customer Info */}
+            {/* Customer & Payment Info */}
             <Card className="p-8">
-              <h2 className="text-xl font-serif font-bold text-foreground mb-6">Delivery To</h2>
-              
+              <h2 className="text-xl font-serif font-bold text-foreground mb-6">Delivery & Payment</h2>
+
               <div className="space-y-4">
                 <div>
                   <p className="text-sm text-muted-foreground mb-1">Name</p>
@@ -126,13 +126,18 @@ export default function ConfirmationPage() {
                 </div>
 
                 <div>
-                  <p className="text-sm text-muted-foreground mb-1">Phone</p>
-                  <p className="text-foreground">{latestOrder.customerPhone}</p>
+                  <p className="text-sm text-muted-foreground mb-1">Address</p>
+                  <p className="text-foreground">{latestOrder.customerAddress}</p>
+                </div>
+
+                <div className="border-t border-border mt-4 pt-4">
+                  <p className="text-sm text-muted-foreground mb-1">Payment Method</p>
+                  <p className="font-semibold text-primary capitalize">{latestOrder.paymentMethod || 'Telebirr / CBE'}</p>
                 </div>
 
                 <div>
-                  <p className="text-sm text-muted-foreground mb-1">Address</p>
-                  <p className="text-foreground">{latestOrder.customerAddress}</p>
+                  <p className="text-sm text-muted-foreground mb-1">Transaction Reference</p>
+                  <p className="font-mono text-foreground">{latestOrder.paymentReference || latestOrder.paymentLast4 || 'Pending'}</p>
                 </div>
               </div>
             </Card>
@@ -141,7 +146,7 @@ export default function ConfirmationPage() {
           {/* Order Items */}
           <Card className="p-8 mb-12">
             <h2 className="text-xl font-serif font-bold text-foreground mb-6">Items Ordered</h2>
-            
+
             <div className="space-y-4">
               {latestOrder.items.map((item, idx) => (
                 <div key={idx} className="flex justify-between items-center pb-4 border-b border-border last:border-0">
@@ -199,7 +204,7 @@ export default function ConfirmationPage() {
           <Card className="p-8 bg-secondary mb-12">
             <h2 className="text-xl font-serif font-bold text-foreground mb-4">Need Help?</h2>
             <p className="text-muted-foreground mb-6">Reach out to our support team via:</p>
-            
+
             <div className="space-y-3">
               <p className="text-foreground">
                 <span className="font-semibold">Telegram:</span> <a href="https://t.me/kidus626" className="text-primary hover:underline">@kidus626</a>

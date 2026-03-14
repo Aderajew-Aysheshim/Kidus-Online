@@ -16,7 +16,6 @@ export default function Home() {
   const { theme, toggleTheme } = useTheme();
   const router = useRouter();
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
-
   const handleAddToCart = (productId, productName, productType, price) => {
     addToCart({
       id: productId,
@@ -74,11 +73,11 @@ export default function Home() {
                   {t.heroTitle}
                 </h1>
               </div>
-              
+
               <p className="text-lg text-muted-foreground max-w-lg leading-relaxed">
                 {t.heroDesc}
               </p>
-              
+
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
                 <Link href="#instruments">
                   <Button size="lg" className="bg-primary hover:bg-primary/90 text-background px-8">
@@ -150,7 +149,7 @@ export default function Home() {
                   <span className="text-3xl font-bold text-primary">$80</span>
                   <span className="text-xs text-muted-foreground">USD</span>
                 </div>
-                <Button 
+                <Button
                   onClick={() => handleAddToCart('kirar', 'Kirar', 'Instrument', 80)}
                   className="w-full bg-primary hover:bg-primary/90 text-background py-5 text-sm font-semibold"
                 >
@@ -177,7 +176,7 @@ export default function Home() {
                   <span className="text-3xl font-bold text-primary">$130</span>
                   <span className="text-xs text-muted-foreground">USD</span>
                 </div>
-                <Button 
+                <Button
                   onClick={() => handleAddToCart('begena', 'Begena', 'Instrument', 130)}
                   className="w-full bg-primary hover:bg-primary/90 text-background py-5 text-sm font-semibold"
                 >
@@ -223,7 +222,7 @@ export default function Home() {
                     <h3 className="text-2xl font-serif font-bold text-foreground mb-3">{course.name}</h3>
                     <p className="text-sm text-muted-foreground leading-relaxed">{course.description}</p>
                   </div>
-                  
+
                   <div className="space-y-4 border-t border-border pt-6">
                     <div className="flex justify-between items-center text-sm">
                       <span className="text-muted-foreground">Duration</span>
@@ -240,7 +239,7 @@ export default function Home() {
                     <span className="text-xs text-muted-foreground">USD total</span>
                   </div>
 
-                  <Button 
+                  <Button
                     onClick={() => router.push(`/enroll?course=${course.id}`)}
                     className="w-full bg-primary hover:bg-primary/90 text-background py-5 text-sm font-semibold"
                   >

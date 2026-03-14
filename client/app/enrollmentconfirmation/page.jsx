@@ -83,7 +83,7 @@ export default function EnrollmentConfirmationPage() {
             {/* Course Info */}
             <Card className="p-8">
               <h2 className="text-xl font-serif font-bold text-foreground mb-6">Course Details</h2>
-              
+
               <div className="space-y-4">
                 <div>
                   <p className="text-sm text-muted-foreground mb-1">Course</p>
@@ -118,7 +118,7 @@ export default function EnrollmentConfirmationPage() {
             {/* Student Info */}
             <Card className="p-8">
               <h2 className="text-xl font-serif font-bold text-foreground mb-6">Your Information</h2>
-              
+
               <div className="space-y-4">
                 <div>
                   <p className="text-sm text-muted-foreground mb-1">Name</p>
@@ -144,6 +144,16 @@ export default function EnrollmentConfirmationPage() {
                   <p className="text-sm text-muted-foreground mb-1">Experience Level</p>
                   <p className="font-semibold text-foreground capitalize">{latestEnrollment.experience}</p>
                 </div>
+
+                <div className="border-t border-border mt-4 pt-4">
+                  <p className="text-sm text-muted-foreground mb-1">Payment Method</p>
+                  <p className="font-semibold text-primary capitalize">{latestEnrollment.paymentMethod || 'Telebirr / CBE'}</p>
+                </div>
+
+                <div>
+                  <p className="text-sm text-muted-foreground mb-1">Transaction Reference</p>
+                  <p className="font-mono text-foreground">{latestEnrollment.paymentReference || 'Pending'}</p>
+                </div>
               </div>
             </Card>
           </div>
@@ -151,7 +161,7 @@ export default function EnrollmentConfirmationPage() {
           {/* What's Next */}
           <Card className="p-8 mb-12">
             <h2 className="text-xl font-serif font-bold text-foreground mb-6">What's Next?</h2>
-            
+
             <div className="space-y-6">
               <div className="flex gap-4">
                 <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold flex-shrink-0">
@@ -214,7 +224,7 @@ export default function EnrollmentConfirmationPage() {
           <Card className="p-8 bg-secondary mb-12">
             <h2 className="text-xl font-serif font-bold text-foreground mb-4">Questions or Need Help?</h2>
             <p className="text-muted-foreground mb-6">Our team is here to support your learning journey. Reach out anytime:</p>
-            
+
             <div className="space-y-3">
               <p className="text-foreground">
                 <span className="font-semibold">Telegram:</span> <a href="https://t.me/kidus626" className="text-primary hover:underline">@kidus626</a>
