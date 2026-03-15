@@ -4,12 +4,16 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import Link from 'next/link';
 import { CheckCircle, Package, Clock, Phone } from 'lucide-react';
-import { useCart } from '@/context/CartContext';
+import { useCart, Order } from '@/context/CartContext';
+
 import { useState, useEffect } from 'react';
+import Footer from '@/components/footer';
+
 
 export default function ConfirmationPage() {
   const { orders } = useCart();
-  const [latestOrder, setLatestOrder] = useState(null);
+  const [latestOrder, setLatestOrder] = useState<Order | null>(null);
+
 
   useEffect(() => {
     if (orders && orders.length > 0) {
@@ -148,7 +152,8 @@ export default function ConfirmationPage() {
             <h2 className="text-xl font-serif font-bold text-foreground mb-6">Items Ordered</h2>
 
             <div className="space-y-4">
-              {latestOrder.items.map((item, idx) => (
+              {latestOrder.items.map((item: any, idx: number) => (
+
                 <div key={idx} className="flex justify-between items-center pb-4 border-b border-border last:border-0">
                   <div>
                     <p className="font-semibold text-foreground">{item.name}</p>
@@ -229,6 +234,8 @@ export default function ConfirmationPage() {
           </div>
         </div>
       </section>
+      <Footer />
     </main>
+
   );
 }

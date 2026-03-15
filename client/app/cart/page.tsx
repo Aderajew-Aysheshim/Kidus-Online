@@ -8,8 +8,10 @@ import { Card } from '@/components/ui/card';
 import Link from 'next/link';
 import { Trash2, Plus, Minus, ShoppingCart } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
+import Footer from '@/components/footer';
 
-const PRODUCTS = {
+
+const PRODUCTS: Record<string, { name: string; type: string; id: string; image: string; description: string }> = {
   kirar: {
     name: 'Kirar',
     type: 'Instrument',
@@ -25,6 +27,7 @@ const PRODUCTS = {
     description: 'Large 10-13 stringed harp with deep spiritual significance.'
   }
 };
+
 
 import { Suspense } from 'react';
 
@@ -134,7 +137,7 @@ function CartContent() {
                           {productData?.description && (
                             <p className="text-muted-foreground text-sm mt-2">{productData.description}</p>
                           )}
-                          <p className="text-primary font-bold text-lg mt-3">${item.price.toFixed(2)}</p>
+                          <p className="text-primary font-bold text-lg mt-3">${Number(item.price).toFixed(2)}</p>
                         </div>
 
                         <div className="flex items-center gap-4">
@@ -164,7 +167,7 @@ function CartContent() {
                       </div>
                       <div className="border-t border-border mt-4 pt-4">
                         <p className="text-right font-semibold text-foreground">
-                          Subtotal: ${(item.price * item.quantity).toFixed(2)}
+                          Subtotal: ${(Number(item.price) * item.quantity).toFixed(2)}
                         </p>
                       </div>
                     </Card>
@@ -237,7 +240,9 @@ function CartContent() {
           )}
         </div>
       </section>
+      <Footer />
     </main>
+
   );
 }
 

@@ -1,8 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect } from 'react';
-
-const LanguageContext = createContext();
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 export const translations = {
   en: {
@@ -76,7 +74,6 @@ export const translations = {
     total: 'Total',
     proceedToCheckout: 'Proceed to Checkout',
     name: 'Name',
-    email: 'Email',
     phone: 'Phone',
     address: 'Address',
     cardNumber: 'Card Number',
@@ -169,12 +166,11 @@ export const translations = {
     paymentInfo: 'የክፍያ መረጃ',
     orderSummary: 'ትዕዛዝ ማጠቃለያ',
     subtotal: 'ንዑስ ድምር',
-    tax: 'ግ세',
+    tax: 'ግሰ',
     shipping: 'ማሰከር',
     total: 'ሙሉ',
     proceedToCheckout: 'ስሌት ወደ ተግባር',
     name: 'ስም',
-    email: 'ኢሜይል',
     phone: 'ስልክ',
     address: 'አድራሻ',
     cardNumber: 'ካርድ ቁጥር',
@@ -186,18 +182,41 @@ export const translations = {
     studentInfo: 'ተማሪ መረጃ',
     schedule: 'መርሐግብር',
     startDate: 'የመጀመር ቀን',
+    contactSupport: 'ድጋፍ ያግኙ',
+    viewMyOrders: 'ትዕዛዞቼን ይመልከቱ',
+    noOrders: 'እስካሁን ምንም ትዕዛዝ የለም',
+    startShopping: 'መግዛት ጀምር',
+    noEnrollments: 'እስካሁን ምንም ኮርስ ምዝገባ የለም',
+    browseCourses: 'ኮርሶችን ይመልከቱ',
+    contactUsForm: 'ያግኙን',
+    message: 'መልዕክት',
+    sendMessage: 'መልዕክት ላክ',
+    messageSent: 'መልዕክት በተሳካ ሁኔታ ተልኳል!',
+    fillRequired: 'እባክዎን አስፈላጊ የሆኑትን ቦታዎች ይሙሉ',
     deliveryDays: '5-10 ቀን ማሰከር',
     groupDiscount: 'ለቡድን እና ምሁራኖች አለ',
     preservingHeritage: 'ኢትዮጵያዊ ሙዚቃ ውርስ ሙሉ ዓለም ውስጥ ነገር ገብ ሰሪ መሳሪያዎች እና ስሌት እንደገና አግኝ።'
   }
 };
 
-export function LanguageProvider({ children }) {
-  const [language, setLanguage] = useState('en');
+type Language = 'en' | 'am';
+
+type TranslationKeys = typeof translations.en;
+
+interface LanguageContextType {
+  language: Language;
+  toggleLanguage: () => void;
+  t: TranslationKeys;
+}
+
+const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
+
+export function LanguageProvider({ children }: { children: ReactNode }) {
+  const [language, setLanguage] = useState<Language>('en');
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const savedLanguage = localStorage.getItem('language') || 'en';
+    const savedLanguage = (localStorage.getItem('language') as Language) || 'en';
     setLanguage(savedLanguage);
     setMounted(true);
   }, []);
@@ -211,7 +230,7 @@ export function LanguageProvider({ children }) {
   if (!mounted) return null;
 
   return (
-    <LanguageContext.Provider value={{ language, toggleLanguage, t: translations[language] }}>
+    <LanguageContext.Provider value={{ language, toggleLanguage, t: translations[language] as TranslationKeys }}>
       {children}
     </LanguageContext.Provider>
   );

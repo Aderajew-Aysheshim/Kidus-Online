@@ -3,13 +3,17 @@
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import Link from 'next/link';
+import Footer from '@/components/footer';
+
 import { CheckCircle, BookOpen, Calendar, Users } from 'lucide-react';
-import { useCart } from '@/context/CartContext';
+import { useCart, Enrollment } from '@/context/CartContext';
 import { useState, useEffect } from 'react';
+
 
 export default function EnrollmentConfirmationPage() {
   const { enrollments } = useCart();
-  const [latestEnrollment, setLatestEnrollment] = useState(null);
+  const [latestEnrollment, setLatestEnrollment] = useState<Enrollment | null>(null);
+
 
   useEffect(() => {
     if (enrollments && enrollments.length > 0) {
@@ -249,6 +253,8 @@ export default function EnrollmentConfirmationPage() {
           </div>
         </div>
       </section>
+      <Footer />
     </main>
+
   );
 }

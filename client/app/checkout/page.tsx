@@ -8,7 +8,10 @@ import { Card } from '@/components/ui/card';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
 
-const PRODUCTS = {
+import Footer from '@/components/footer';
+
+const PRODUCTS: Record<string, { name: string; image: string }> = {
+
   kirar: {
     name: 'Kirar',
     image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/kirar%20for%20sell%20side%20view-Pos4gWLLWBdoyFVz4Y8FUWaqUMftCz.jpg'
@@ -37,21 +40,21 @@ export default function CheckoutPage() {
     paymentMethod: 'telebirr',
     referenceNumber: ''
   });
-  const [errors, setErrors] = useState({});
+const [errors, setErrors] = useState<Record<string, string>>({});
 
   const subtotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
   const tax = subtotal * 0.1;
   const shipping = cart.length > 0 ? 10 : 0;
   const total = subtotal + tax + shipping;
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }));
   };
 
   const validateStep1 = () => {
-    const newErrors = {};
+    const newErrors: Record<string, string> = {};
     if (!formData.firstName) newErrors.firstName = 'First name is required';
     if (!formData.lastName) newErrors.lastName = 'Last name is required';
     if (!formData.email) newErrors.email = 'Email is required';
@@ -64,7 +67,7 @@ export default function CheckoutPage() {
   };
 
   const validateStep2 = () => {
-    const newErrors = {};
+    const newErrors: Record<string, string> = {};
     if (!formData.referenceNumber) newErrors.referenceNumber = 'Transaction reference number is required';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -176,9 +179,9 @@ export default function CheckoutPage() {
               <span className="text-xl font-serif font-bold text-foreground">Kidus Online</span>
             </Link>
             <div className="flex items-center gap-4">
-              <a href="https://youtube.com/channel/UCrZrZWK_7UHLAY-G16OX3HA?si=zxQEOBOBTtuiRROW" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline text-sm">YouTube</a>
-              <a href="https://www.tiktok.com/@mezmur0512" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline text-sm">TikTok</a>
+              <Link href="/"><Button variant="outline">Back to Home</Button></Link>
             </div>
+
           </div>
         </div>
       </nav>
@@ -227,12 +230,12 @@ export default function CheckoutPage() {
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-foreground mb-2">First Name</label>
-                        <input type="text" name="firstName" value={formData.firstName} onChange={handleInputChange} className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground" placeholder="John" />
+                        <input type="text" name="firstName" value={formData.firstName} onChange={handleInputChange} className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground" placeholder="Ayshe" />
                         {errors.firstName && <p className="text-destructive text-sm mt-1">{errors.firstName}</p>}
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-foreground mb-2">Last Name</label>
-                        <input type="text" name="lastName" value={formData.lastName} onChange={handleInputChange} className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground" placeholder="Doe" />
+                        <input type="text" name="lastName" value={formData.lastName} onChange={handleInputChange} className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground" placeholder="Ade" />
                         {errors.lastName && <p className="text-destructive text-sm mt-1">{errors.lastName}</p>}
                       </div>
                     </div>
@@ -348,7 +351,7 @@ export default function CheckoutPage() {
                             <p className="font-semibold text-foreground text-sm">{item.name}</p>
                             <p className="text-muted-foreground text-xs">Qty: {item.quantity}</p>
                           </div>
-                          <span className="text-foreground font-semibold">${(item.price * item.quantity).toFixed(2)}</span>
+                          <span className="text-foreground font-semibold">${(Number(item.price) * item.quantity).toFixed(2)}</span>
                         </div>
                       </div>
                     );
@@ -370,6 +373,8 @@ export default function CheckoutPage() {
           </div>
         </div>
       </section>
+      <Footer />
     </main>
+
   );
 }

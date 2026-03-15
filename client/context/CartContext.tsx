@@ -1,15 +1,54 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect } from 'react';
+export interface CartItem {
 
-const CartContext = createContext();
+  id: string | number;
+  name: string;
+  price: number;
+  quantity: number;
+  cartItemId: number;
+  [key: string]: any;
+}
 
-export function CartProvider({ children }) {
-  const [cart, setCart] = useState([]);
-  const [orders, setOrders] = useState([]);
-  const [enrollments, setEnrollments] = useState([]);
+export interface Order {
 
-  // Load from localStorage on mount
+  id: string;
+  date: string;
+  status: string;
+  items: CartItem[];
+  total: number;
+  [key: string]: any;
+}
+
+export interface Enrollment {
+
+  id: string;
+  enrollDate: string;
+  status: string;
+  courseId: string;
+  [key: string]: any;
+}
+
+interface CartContextType {
+  cart: CartItem[];
+  addToCart: (product: any) => void;
+  removeFromCart: (cartItemId: number) => void;
+  updateCartQuantity: (cartItemId: number, quantity: number) => void;
+  clearCart: () => void;
+  orders: Order[];
+  addOrder: (order: any) => Order;
+  enrollments: Enrollment[];
+  addEnrollment: (enrollment: any) => Enrollment;
+}
+
+const CartContext = createContext<CartContextType | undefined>(undefined);
+
+export function CartProvider({ children }: { children: React.ReactNode }) {
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
+
   useEffect(() => {
     const savedCart = localStorage.getItem('kidus_cart');
     const savedOrders = localStorage.getItem('kidus_orders');
@@ -20,22 +59,19 @@ export function CartProvider({ children }) {
     if (savedEnrollments) setEnrollments(JSON.parse(savedEnrollments));
   }, []);
 
-  // Save cart to localStorage
   useEffect(() => {
     localStorage.setItem('kidus_cart', JSON.stringify(cart));
   }, [cart]);
 
-  // Save orders to localStorage
   useEffect(() => {
     localStorage.setItem('kidus_orders', JSON.stringify(orders));
   }, [orders]);
 
-  // Save enrollments to localStorage
   useEffect(() => {
     localStorage.setItem('kidus_enrollments', JSON.stringify(enrollments));
   }, [enrollments]);
 
-  const addToCart = (product) => {
+  const addToCart = (product: any) => {
     setCart(prevCart => {
       const existingItem = prevCart.find(item => item.id === product.id);
       if (existingItem) {
@@ -49,11 +85,11 @@ export function CartProvider({ children }) {
     });
   };
 
-  const removeFromCart = (cartItemId) => {
+  const removeFromCart = (cartItemId: number) => {
     setCart(prevCart => prevCart.filter(item => item.cartItemId !== cartItemId));
   };
 
-  const updateCartQuantity = (cartItemId, quantity) => {
+  const updateCartQuantity = (cartItemId: number, quantity: number) => {
     if (quantity <= 0) {
       removeFromCart(cartItemId);
       return;
@@ -69,8 +105,8 @@ export function CartProvider({ children }) {
     setCart([]);
   };
 
-  const addOrder = (order) => {
-    const newOrder = {
+  const addOrder = (order: any) => {
+    const newOrder: Order = {
       ...order,
       id: Date.now().toString(),
       date: new Date().toISOString(),
@@ -80,8 +116,8 @@ export function CartProvider({ children }) {
     return newOrder;
   };
 
-  const addEnrollment = (enrollment) => {
-    const newEnrollment = {
+  const addEnrollment = (enrollment: any) => {
+    const newEnrollment: Enrollment = {
       ...enrollment,
       id: Date.now().toString(),
       enrollDate: new Date().toISOString(),

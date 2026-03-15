@@ -3,35 +3,38 @@
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import Link from 'next/link';
+import Footer from '@/components/footer';
+
 import { Package, BookOpen, ArrowRight, RefreshCw, Mail } from 'lucide-react';
-import { useCart } from '@/context/CartContext';
+import { useCart, Order, Enrollment } from '@/context/CartContext';
 import { useState, useEffect } from 'react';
 import { getOrders, getEnrollments } from '@/lib/api';
+
 
 export default function OrdersPage() {
   const { orders: localOrders, enrollments: localEnrollments } = useCart();
   const [mounted, setMounted] = useState(false);
 
-  // Server-fetched data (by email lookup)
   const [email, setEmail] = useState('');
   const [emailInput, setEmailInput] = useState('');
-  const [serverOrders, setServerOrders] = useState(null);       // null = not fetched yet
-  const [serverEnrollments, setServerEnrollments] = useState(null);
+  const [serverOrders, setServerOrders] = useState<Order[] | null>(null);
+  const [serverEnrollments, setServerEnrollments] = useState<Enrollment[] | null>(null);
   const [fetchLoading, setFetchLoading] = useState(false);
   const [fetchError, setFetchError] = useState('');
+
 
   useEffect(() => { setMounted(true); }, []);
   if (!mounted) return null;
 
-  // Merge local + server data (server takes precedence when loaded)
   const orders = serverOrders ?? localOrders;
   const enrollments = serverEnrollments ?? localEnrollments;
 
   const hasOrders = orders && orders.length > 0;
   const hasEnrollments = enrollments && enrollments.length > 0;
 
-  const handleFetch = async (e) => {
+  const handleFetch = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (!emailInput.trim()) return;
     setFetchLoading(true);
     setFetchError('');
@@ -46,7 +49,7 @@ export default function OrdersPage() {
       setServerOrders(ordersRes.data?.results ?? ordersRes.data ?? []);
       setServerEnrollments(enrollRes.data?.results ?? enrollRes.data ?? []);
       setEmail(emailInput.trim());
-    } catch (err) {
+    } catch (err: any) {
       console.error('Fetch failed:', err);
       if (err.code === 'ERR_NETWORK' || !err.response) {
         setFetchError('Cannot connect to the server. Make sure Django is running on port 8000. Showing local data instead.');
@@ -58,7 +61,9 @@ export default function OrdersPage() {
     }
   };
 
-  const formatDate = (dateStr) => {
+
+  const formatDate = (dateStr: string) => {
+
     try {
       return new Date(dateStr).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
     } catch { return dateStr; }
@@ -66,7 +71,6 @@ export default function OrdersPage() {
 
   return (
     <main className="min-h-screen bg-background">
-      {/* Navigation */}
       <nav className="sticky top-0 z-50 bg-background border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
@@ -79,12 +83,10 @@ export default function OrdersPage() {
         </div>
       </nav>
 
-      {/* Dashboard */}
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-4xl font-serif font-bold text-foreground mb-8">My Account</h1>
 
-          {/* Email Lookup — fetch from Django */}
           <Card className="p-6 mb-10 border-primary/20">
             <h2 className="text-lg font-semibold text-foreground mb-2 flex items-center gap-2">
               <Mail className="w-5 h-5 text-primary" />
@@ -140,7 +142,6 @@ export default function OrdersPage() {
           ) : (
             <div className="space-y-12">
 
-              {/* Orders Section */}
               {hasOrders && (
                 <div>
                   <div className="flex items-center gap-3 mb-8">
@@ -187,7 +188,6 @@ export default function OrdersPage() {
                 </div>
               )}
 
-              {/* Enrollments Section */}
               {hasEnrollments && (
                 <div>
                   <div className="flex items-center gap-3 mb-8">
@@ -232,7 +232,6 @@ export default function OrdersPage() {
             </div>
           )}
 
-          {/* Help Section */}
           <Card className="p-8 bg-secondary mt-12">
             <h2 className="text-xl font-serif font-bold text-foreground mb-4">Need Help?</h2>
             <p className="text-muted-foreground mb-6">Can&apos;t find what you&apos;re looking for? Contact our support team:</p>
@@ -253,6 +252,8 @@ export default function OrdersPage() {
           </Card>
         </div>
       </section>
+      <Footer />
     </main>
+
   );
 }

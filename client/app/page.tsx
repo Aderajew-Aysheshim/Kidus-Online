@@ -5,30 +5,64 @@ import { Card } from '@/components/ui/card';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { Phone, MessageCircle, Mail, MapPin, Star, Users, ShoppingCart, ArrowRight, Moon, Sun, Globe } from 'lucide-react';
+import { Phone, MessageCircle, Mail, MapPin, Star, Users, ShoppingCart, ArrowRight, Moon, Sun, Globe, Youtube, Music } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
+import { getProducts } from '@/lib/api';
+import { useEffect, useState } from 'react';
+import Footer from '@/components/footer';
+
+
+interface Product {
+  id: string | number;
+  name: string;
+  name_amharic?: string;
+  description?: string;
+  description_amharic?: string;
+  price: number;
+  price_currency?: string;
+  image?: string;
+  instrument_type?: string;
+  slug?: string;
+}
 
 export default function Home() {
   const { cart, addToCart } = useCart();
   const { language, toggleLanguage, t } = useLanguage();
   const { theme, toggleTheme } = useTheme();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loadingProducts, setLoadingProducts] = useState(true);
   const router = useRouter();
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await getProducts();
+        setProducts(response.data?.results || response.data || []);
+      } catch (error) {
+        console.error('Failed to fetch products:', error);
+      } finally {
+        setLoadingProducts(false);
+      }
+    };
+    fetchProducts();
+  }, []);
+
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
-  const handleAddToCart = (productId, productName, productType, price) => {
+
+  const handleAddToCart = (product: Product) => {
     addToCart({
-      id: productId,
-      name: productName,
-      type: productType,
-      price: price,
+      id: product.slug || product.id,
+      name: language === 'am' && product.name_amharic ? product.name_amharic : product.name,
+      type: 'Instrument',
+      price: product.price,
       quantity: 1
     });
   };
 
   return (
     <div className="bg-background text-foreground">
-      {/* Navigation */}
       <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
           <h1 className="text-2xl font-serif font-bold text-primary">Kidus Online</h1>
@@ -62,7 +96,6 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Hero Section */}
       <section className="relative pt-32 pb-20 bg-background overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -121,7 +154,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Instruments Section */}
       <section id="instruments" className="py-20 bg-secondary/20 border-t border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -131,64 +163,104 @@ export default function Home() {
           </div>
 
           <div className="grid lg:grid-cols-2 gap-12">
-            {/* Kirar */}
-            <Card className="bg-card border-border overflow-hidden flex flex-col hover:border-primary/50 transition-colors">
-              <div className="relative h-72 bg-secondary">
-                <Image
-                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/kirar%20for%20sell%20side%20view-Pos4gWLLWBdoyFVz4Y8FUWaqUMftCz.jpg"
-                  alt="Kirar - 5-10 stringed Ethiopian lyre"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <div className="p-8 flex flex-col flex-1">
-                <h3 className="text-2xl font-serif font-bold text-foreground mb-2">Kirar</h3>
-                <p className="text-sm text-muted-foreground mb-1">Traditional Ethiopian Lyre</p>
-                <p className="text-muted-foreground mb-6 flex-1 text-sm leading-relaxed">5-10 stringed instrument perfect for beginners and musicians seeking authentic Ethiopian sound and spiritual connection.</p>
-                <div className="flex items-baseline gap-2 mb-8 border-t border-border pt-6">
-                  <span className="text-3xl font-bold text-primary">$80</span>
-                  <span className="text-xs text-muted-foreground">USD</span>
-                </div>
-                <Button
-                  onClick={() => handleAddToCart('kirar', 'Kirar', 'Instrument', 80)}
-                  className="w-full bg-primary hover:bg-primary/90 text-background py-5 text-sm font-semibold"
-                >
-                  Add to Cart
-                </Button>
-              </div>
-            </Card>
+            {loadingProducts ? (
+              [1, 2].map((i) => (
+                <Card key={i} className="animate-pulse bg-card border-border h-96"></Card>
+              ))
+            ) : products.length > 0 ? (
+              products.filter(p => p.instrument_type === 'kirar' || p.instrument_type === 'begena').map((product) => (
+                <Card key={product.id} className="bg-card border-border overflow-hidden flex flex-col hover:border-primary/50 transition-colors">
+                  <div className="relative h-72 bg-secondary">
+                    <Image
+                      src={product.image || (product.instrument_type === 'kirar' 
+                        ? "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/kirar%20for%20sell%20side%20view-Pos4gWLLWBdoyFVz4Y8FUWaqUMftCz.jpg" 
+                        : "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/photo_2026-03-01_16-29-52-xHOkHIA7nQDL1U4Ma6c9IRlVZJyyGo.jpg")
+                      }
+                      alt={product.name}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                  <div className="p-8 flex flex-col flex-1">
+                    <h3 className="text-2xl font-serif font-bold text-foreground mb-2">
+                       {language === 'am' && product.name_amharic ? product.name_amharic : product.name}
+                    </h3>
+                    <p className="text-sm text-muted-foreground mb-1">{product.instrument_type === 'begena' ? 'Grand Ethiopian Harp' : 'Traditional Ethiopian Lyre'}</p>
+                    <p className="text-muted-foreground mb-6 flex-1 text-sm leading-relaxed">
+                      {language === 'am' && product.description_amharic ? product.description_amharic : product.description}
+                    </p>
+                    <div className="flex items-baseline gap-2 mb-8 border-t border-border pt-6">
+                      <span className="text-3xl font-bold text-primary">${product.price}</span>
+                      <span className="text-xs text-muted-foreground">{product.price_currency || 'USD'}</span>
+                    </div>
+                    <Button
+                      onClick={() => handleAddToCart(product)}
+                      className="w-full bg-primary hover:bg-primary/90 text-background py-5 text-sm font-semibold"
+                    >
+                      Add to Cart
+                    </Button>
+                  </div>
+                </Card>
+              ))
+            ) : (
+              <>
+                <Card className="bg-card border-border overflow-hidden flex flex-col hover:border-primary/50 transition-colors">
+                  <div className="relative h-72 bg-secondary">
+                    <Image
+                      src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/kirar%20for%20sell%20side%20view-Pos4gWLLWBdoyFVz4Y8FUWaqUMftCz.jpg"
+                      alt="Kirar - 5-10 stringed Ethiopian lyre"
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                  <div className="p-8 flex flex-col flex-1">
+                    <h3 className="text-2xl font-serif font-bold text-foreground mb-2">Kirar</h3>
+                    <p className="text-sm text-muted-foreground mb-1">Traditional Ethiopian Lyre</p>
+                    <p className="text-muted-foreground mb-6 flex-1 text-sm leading-relaxed">5-10 stringed instrument perfect for beginners and musicians seeking authentic Ethiopian sound and spiritual connection.</p>
+                    <div className="flex items-baseline gap-2 mb-8 border-t border-border pt-6">
+                      <span className="text-3xl font-bold text-primary">$80</span>
+                      <span className="text-xs text-muted-foreground">USD</span>
+                    </div>
+                    <Button
+                      onClick={() => handleAddToCart({ id: 'kirar', name: 'Kirar', price: 80 } as Product)}
+                      className="w-full bg-primary hover:bg-primary/90 text-background py-5 text-sm font-semibold"
+                    >
+                      Add to Cart
+                    </Button>
+                  </div>
+                </Card>
 
-            {/* Begena */}
-            <Card className="bg-card border-border overflow-hidden flex flex-col hover:border-primary/50 transition-colors">
-              <div className="relative h-72 bg-secondary">
-                <Image
-                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/photo_2026-03-01_16-29-52-xHOkHIA7nQDL1U4Ma6c9IRlVZJyyGo.jpg"
-                  alt="Begena collection - Various styles and colors"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <div className="p-8 flex flex-col flex-1">
-                <h3 className="text-2xl font-serif font-bold text-foreground mb-2">Begena</h3>
-                <p className="text-sm text-muted-foreground mb-1">Grand Ethiopian Harp</p>
-                <p className="text-muted-foreground mb-6 flex-1 text-sm leading-relaxed">10-13 stringed instrument with deep spiritual significance. A masterpiece of traditional Ethiopian craftsmanship and artistry.</p>
-                <div className="flex items-baseline gap-2 mb-8 border-t border-border pt-6">
-                  <span className="text-3xl font-bold text-primary">$130</span>
-                  <span className="text-xs text-muted-foreground">USD</span>
-                </div>
-                <Button
-                  onClick={() => handleAddToCart('begena', 'Begena', 'Instrument', 130)}
-                  className="w-full bg-primary hover:bg-primary/90 text-background py-5 text-sm font-semibold"
-                >
-                  Add to Cart
-                </Button>
-              </div>
-            </Card>
+                <Card className="bg-card border-border overflow-hidden flex flex-col hover:border-primary/50 transition-colors">
+                  <div className="relative h-72 bg-secondary">
+                    <Image
+                      src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/photo_2026-03-01_16-29-52-xHOkHIA7nQDL1U4Ma6c9IRlVZJyyGo.jpg"
+                      alt="Begena collection - Various styles and colors"
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                  <div className="p-8 flex flex-col flex-1">
+                    <h3 className="text-2xl font-serif font-bold text-foreground mb-2">Begena</h3>
+                    <p className="text-sm text-muted-foreground mb-1">Grand Ethiopian Harp</p>
+                    <p className="text-muted-foreground mb-6 flex-1 text-sm leading-relaxed">10-13 stringed instrument with deep spiritual significance. A masterpiece of traditional Ethiopian craftsmanship and artistry.</p>
+                    <div className="flex items-baseline gap-2 mb-8 border-t border-border pt-6">
+                      <span className="text-3xl font-bold text-primary">$130</span>
+                      <span className="text-xs text-muted-foreground">USD</span>
+                    </div>
+                    <Button
+                      onClick={() => handleAddToCart({ id: 'begena', name: 'Begena', price: 130 } as Product)}
+                      className="w-full bg-primary hover:bg-primary/90 text-background py-5 text-sm font-semibold"
+                    >
+                      Add to Cart
+                    </Button>
+                  </div>
+                </Card>
+              </>
+            )}
           </div>
         </div>
       </section>
 
-      {/* Classes Section */}
       <section id="classes" className="py-20 bg-background border-t border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -252,7 +324,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Showcase Section */}
       <section className="py-20 bg-secondary/20 border-t border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -293,7 +364,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Features Grid */}
       <section className="py-20 bg-background border-t border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-3 gap-8">
@@ -316,7 +386,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Contact Section */}
       <section className="py-20 bg-secondary/20 border-t border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -324,7 +393,7 @@ export default function Home() {
             <p className="text-muted-foreground max-w-2xl mx-auto">Reach out through your preferred channel for inquiries or support</p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
             <a href="https://t.me/kidus626" target="_blank" rel="noopener noreferrer" className="group">
               <Card className="bg-card border-border p-6 hover:border-primary/50 transition-colors h-full flex flex-col items-center text-center group-hover:bg-secondary/50">
                 <MessageCircle className="w-8 h-8 text-primary mb-3" />
@@ -337,6 +406,20 @@ export default function Home() {
                 <Phone className="w-8 h-8 text-primary mb-3" />
                 <h3 className="font-semibold text-sm mb-1">WhatsApp</h3>
                 <p className="text-xs text-muted-foreground">+251 954 789 638</p>
+              </Card>
+            </a>
+            <a href="https://youtube.com/channel/UCrZrZWK_7UHLAY-G16OX3HA?si=zxQEOBOBTtuiRROW" target="_blank" rel="noopener noreferrer" className="group">
+              <Card className="bg-card border-border p-6 hover:border-primary/50 transition-colors h-full flex flex-col items-center text-center group-hover:bg-secondary/50">
+                <Youtube className="w-8 h-8 text-primary mb-3" />
+                <h3 className="font-semibold text-sm mb-1">YouTube</h3>
+                <p className="text-xs text-muted-foreground">Subscribe</p>
+              </Card>
+            </a>
+            <a href="https://www.tiktok.com/@mezmur0512" target="_blank" rel="noopener noreferrer" className="group">
+              <Card className="bg-card border-border p-6 hover:border-primary/50 transition-colors h-full flex flex-col items-center text-center group-hover:bg-secondary/50">
+                <Music className="w-8 h-8 text-primary mb-3" />
+                <h3 className="font-semibold text-sm mb-1">TikTok</h3>
+                <p className="text-xs text-muted-foreground">@mezmur0512</p>
               </Card>
             </a>
             <Link href="/contact" className="group">
@@ -354,45 +437,12 @@ export default function Home() {
               </Card>
             </Link>
           </div>
+
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-secondary border-t border-border py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-12 mb-12">
-            <div>
-              <h3 className="font-serif font-bold text-lg mb-3">Kidus Online</h3>
-              <p className="text-xs text-muted-foreground leading-relaxed">Preserving Ethiopian musical heritage through authentic instruments and expert education worldwide.</p>
-            </div>
-            <div>
-              <h4 className="font-semibold text-sm mb-4">Instruments</h4>
-              <ul className="space-y-2 text-xs text-muted-foreground">
-                <li><Link href="#instruments" className="hover:text-primary transition">Kirar</Link></li>
-                <li><Link href="#instruments" className="hover:text-primary transition">Begena</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold text-sm mb-4">Education</h4>
-              <ul className="space-y-2 text-xs text-muted-foreground">
-                <li><Link href="#classes" className="hover:text-primary transition">Online Courses</Link></li>
-                <li><Link href="/orders" className="hover:text-primary transition">My Account</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold text-sm mb-4">Contact</h4>
-              <ul className="space-y-2 text-xs text-muted-foreground">
-                <li><a href="https://t.me/kidus626" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition">Telegram</a></li>
-                <li><a href="https://wa.me/251954789638" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition">WhatsApp</a></li>
-                <li><Link href="/contact" className="hover:text-primary transition">Email</Link></li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-border pt-8 text-center text-xs text-muted-foreground">
-            <p>© 2026 Kidus Online. All rights reserved. Preserving Ethiopian musical traditions.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
+
     </div>
   );
 }

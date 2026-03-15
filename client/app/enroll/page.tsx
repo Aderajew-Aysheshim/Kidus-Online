@@ -5,18 +5,33 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import Link from 'next/link';
+import Footer from '@/components/footer';
+
 import { useCart } from '@/context/CartContext';
 import { Calendar } from 'lucide-react';
 
-const COURSES = {
-  begena: { name: 'Begena Course', price: 89, duration: '8 weeks', students: 'Up to 15', description: 'Learn the ancient Ethiopian harp with 10-13 strings. Master traditional techniques and spiritual music.' },
-  kirar: { name: 'Kirar Course', price: 69, duration: '6 weeks', students: 'Up to 20', description: 'Learn the traditional 5-10 stringed Ethiopian lyre. Perfect for beginners and intermediate players.' }
+const COURSES: Record<string, { name: string; price: number; duration: string; students: string; description: string }> = {
+  begena: {
+    name: 'Begena Course',
+    price: 89,
+    duration: '8 weeks',
+    students: 'Up to 15',
+    description: 'Master the ancient 10-13 stringed Ethiopian harp. Learn traditional techniques and spiritual music practices.'
+  },
+  kirar: {
+    name: 'Kirar Course',
+    price: 69,
+    duration: '6 weeks',
+    students: 'Up to 20',
+    description: 'Learn the 5-10 stringed Ethiopian lyre. Ideal for beginners and musicians of all levels.'
+  }
 };
 
-const SCHEDULES = {
+const SCHEDULES: Record<string, string[]> = {
   begena: ['Monday & Wednesday (7 PM)', 'Saturday & Sunday (10 AM)', 'Tuesday & Thursday (6 PM)'],
   kirar: ['Tuesday & Thursday (8 PM)', 'Saturday (2 PM)', 'Wednesday & Friday (7 PM)']
 };
+
 
 import { Suspense } from 'react';
 
@@ -26,32 +41,37 @@ function EnrollContent() {
   const { addEnrollment } = useCart();
 
   const [step, setStep] = useState(1);
-  const [selectedCourse, setSelectedCourse] = useState(null);
+  const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
+
   const [selectedSchedule, setSelectedSchedule] = useState('');
   const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState('');
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<Record<string, string>>({
     firstName: '',
     lastName: '',
     email: '',
     phone: '',
+    course: '',
+    schedule: '',
     experience: 'beginner',
     instrument: 'kirar',
     paymentMethod: 'telebirr',
     referenceNumber: ''
   });
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     const course = searchParams.get('course');
     if (course && COURSES[course]) setSelectedCourse(course);
+
   }, [searchParams]);
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }));
   };
+
 
   const validateStep = () => {
     const newErrors = {};
@@ -80,8 +100,8 @@ function EnrollContent() {
 
     const enrollPayload = {
       course: selectedCourse,
-      course_name: COURSES[selectedCourse].name,
-      course_price: COURSES[selectedCourse].price,
+      course_name: selectedCourse ? COURSES[selectedCourse].name : '',
+      course_price: selectedCourse ? COURSES[selectedCourse].price : 0,
       schedule: selectedSchedule,
       student_name: `${formData.firstName} ${formData.lastName}`,
       student_email: formData.email,
@@ -92,6 +112,7 @@ function EnrollContent() {
       payment_reference: formData.referenceNumber,
       start_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
     };
+
 
     try {
       const { createEnrollment } = await import('@/lib/api');
@@ -221,12 +242,12 @@ function EnrollContent() {
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-foreground mb-2">First Name</label>
-                        <input type="text" name="firstName" value={formData.firstName} onChange={handleInputChange} className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground" placeholder="John" />
+                        <input type="text" name="firstName" value={formData.firstName} onChange={handleInputChange} className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground" placeholder="Ayshe" />
                         {errors.firstName && <p className="text-destructive text-sm mt-1">{errors.firstName}</p>}
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-foreground mb-2">Last Name</label>
-                        <input type="text" name="lastName" value={formData.lastName} onChange={handleInputChange} className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground" placeholder="Doe" />
+                        <input type="text" name="lastName" value={formData.lastName} onChange={handleInputChange} className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground" placeholder="Ade" />
                         {errors.lastName && <p className="text-destructive text-sm mt-1">{errors.lastName}</p>}
                       </div>
                     </div>
@@ -268,7 +289,7 @@ function EnrollContent() {
                       <div className="space-y-4">
                         <div>
                           <p className="text-sm text-muted-foreground">Course</p>
-                          <p className="font-bold text-foreground text-lg">{COURSES[selectedCourse].name}</p>
+                          <p className="font-bold text-foreground text-lg">{selectedCourse ? COURSES[selectedCourse].name : ''}</p>
                         </div>
                         <div>
                           <p className="text-sm text-muted-foreground">Schedule</p>
@@ -286,8 +307,9 @@ function EnrollContent() {
                         </div>
                         <div className="pt-4 border-t border-border">
                           <p className="text-sm text-muted-foreground">Total Price</p>
-                          <p className="text-2xl font-bold text-primary">${COURSES[selectedCourse].price}</p>
+                          <p className="text-2xl font-bold text-primary">${selectedCourse ? COURSES[selectedCourse].price : 0}</p>
                         </div>
+
                       </div>
                     </Card>
 
@@ -367,6 +389,7 @@ function EnrollContent() {
                       <p className="text-sm text-muted-foreground mb-1">Class Size</p>
                       <p className="font-semibold text-foreground">{COURSES[selectedCourse].students}</p>
                     </div>
+
                     {selectedSchedule && (
                       <div>
                         <p className="text-sm text-muted-foreground mb-1">Schedule</p>
@@ -378,6 +401,7 @@ function EnrollContent() {
                     <p className="text-sm text-muted-foreground mb-2">Total Price</p>
                     <p className="text-3xl font-bold text-primary">${COURSES[selectedCourse].price}</p>
                   </div>
+
                   <div className="mt-6 pt-6 border-t border-border">
                     <h4 className="font-semibold text-foreground mb-3">What&apos;s Included</h4>
                     <ul className="space-y-2 text-xs text-muted-foreground">
@@ -394,7 +418,9 @@ function EnrollContent() {
           </div>
         </div>
       </section>
+      <Footer />
     </main>
+
   );
 }
 

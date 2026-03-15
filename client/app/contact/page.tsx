@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { MessageCircle, Phone, Mail } from 'lucide-react';
 import Link from 'next/link';
+import Footer from '@/components/footer';
+
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -14,16 +16,18 @@ export default function ContactPage() {
     subject: 'general',
     message: ''
   });
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState('');
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }));
   };
+
 
   const validateForm = () => {
     const newErrors = {};
@@ -242,6 +246,8 @@ export default function ContactPage() {
           </Card>
         </div>
       </section>
+      <Footer />
     </main>
+
   );
 }
